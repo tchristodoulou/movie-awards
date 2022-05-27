@@ -1,0 +1,12 @@
+# MacOS
+.DS_Store
+
+# Maven
+target/
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
