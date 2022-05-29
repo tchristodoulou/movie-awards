@@ -1,9 +1,8 @@
 package com.backbase.movieawards.service;
 
 import com.backbase.movieawards.model.OMDBMovieDetailsResponse;
+import com.backbase.movieawards.repository.MovieDetailsRepository;
 import com.backbase.movieawards.repository.entity.MovieDetails;
-import com.backbase.movieawards.repository.entity.WinningTitle;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class MovieAwardsService {
 
   private final RestTemplate restTemplate;
+  private final MovieDetailsRepository movieDetailsRepository;
 
   @Value("${movie-awards.omdb-api-key}")
   private String apiKey;
@@ -38,13 +38,8 @@ public class MovieAwardsService {
 
     final var movieDetailsResponse = response.getBody();
 
-    return MovieDetails.builder()
-        .id(UUID.randomUUID())
-        .year(movieDetailsResponse.getYear())
-        .category("test category")
-        .nominee(movieDetailsResponse.getTitle())
-        .additionalInfo(movieDetailsResponse.getPlot())
-        .won(WinningTitle.NO)
-        .build();
+    final var movieDetails = movieDetailsRepository.findByNomineeAndYearAndCategory(movieDetailsResponse.getTitle(), movieDetailsResponse.getYear(), "Best Picture");
+
+    return movieDetails;
   }
 }

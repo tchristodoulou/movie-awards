@@ -24,6 +24,6 @@ class MovieAwardsResponseAssemblerTest {
     assertEquals(movieDetails.getCategory(), movieDetailsResponse.getCategory());
     assertEquals(movieDetails.getNominee(), movieDetailsResponse.getNominee());
     assertEquals(movieDetails.getAdditionalInfo(), movieDetailsResponse.getAdditionalInfo());
-    assertEquals(movieDetails.getWon().name(), movieDetailsResponse.getWon());
+    assertEquals(movieDetails.getWon(), movieDetailsResponse.getWon());
   }
 }

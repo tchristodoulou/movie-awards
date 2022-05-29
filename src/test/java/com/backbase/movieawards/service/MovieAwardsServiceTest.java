@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.backbase.movieawards.model.OMDBMovieDetailsResponse;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponseFixtures;
-import com.backbase.movieawards.repository.entity.WinningTitle;
+import com.backbase.movieawards.repository.MovieDetailsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +21,13 @@ class MovieAwardsServiceTest {
 
   private static final String NAME = "test name";
   private static final String YEAR = "2022";
+  private static final String WON = "NO";
   private static final String API_KEY = "testKey";
   private static final String URL = "http://www.testapi.com/";
   private static final String TEST_URL = URL + "?apikey=" + API_KEY + "&t=test+name&y=" + YEAR;
 
   @Mock private RestTemplate restTemplate;
+  @Mock private MovieDetailsRepository movieDetailsRepository;
 
   private MovieAwardsService subject;
   private OMDBMovieDetailsResponse omdbMovieDetailsResponse;
@@ -33,7 +35,7 @@ class MovieAwardsServiceTest {
   @BeforeEach
   void onBeforeEach() {
     omdbMovieDetailsResponse = OMDBMovieDetailsResponseFixtures.getOMDBMovieDetailsResponse();
-    subject = new MovieAwardsService(restTemplate);
+    subject = new MovieAwardsService(restTemplate, movieDetailsRepository);
   }
 
   @Test
@@ -49,6 +51,6 @@ class MovieAwardsServiceTest {
     assertEquals(omdbMovieDetailsResponse.getYear(), movieDetails.getYear());
     assertEquals(omdbMovieDetailsResponse.getTitle(), movieDetails.getNominee());
     assertEquals(omdbMovieDetailsResponse.getPlot(), movieDetails.getAdditionalInfo());
-    assertEquals(WinningTitle.NO, movieDetails.getWon());
+    assertEquals(WON, movieDetails.getWon());
   }
 }

@@ -14,7 +14,7 @@ public class MovieAwardsResponseAssembler {
         .category(movieDetails.getCategory())
         .nominee(movieDetails.getNominee())
         .additionalInfo(movieDetails.getAdditionalInfo())
-        .won(movieDetails.getWon().name())
+        .won(movieDetails.getWon())
         .build();
   }
 }

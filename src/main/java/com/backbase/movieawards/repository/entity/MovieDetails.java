@@ -14,7 +14,7 @@ import org.hibernate.annotations.Type;
 
 @Data
 @Entity
-@Table(name = "movie-awards")
+@Table(name = "movie_awards")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -26,18 +26,18 @@ public class MovieDetails {
   @Column(name = "id", nullable = false, length = 36)
   private UUID id;
 
-  @Column(name = "year", length = 4)
+  @Column(name = "year")
   private String year;
 
-  @Column(name = "category", length = 50)
+  @Column(name = "category")
   private String category;
 
-  @Column(name = "nominee", length = 50)
+  @Column(name = "nominee")
   private String nominee;
 
-  @Column(name = "additionalInfo", length = 50)
+  @Column(name = "additionalInfo")
   private String additionalInfo;
 
-  @Column(name = "won", length = 3)
-  private WinningTitle won;
+  @Column(name = "won")
+  private String won;
 }
