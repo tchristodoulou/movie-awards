@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS `movie-awards` (
-                                          `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                          `year` varchar(4),
-                                          `category` varchar(50),
-                                          `nominee` varchar(50),
-                                          `additionalInfo` varchar(255),
-                                          `won` varchar(3)
+                                          `id` VARCHAR(36) NOT NULL PRIMARY KEY,
+                                          `year` VARCHAR(4),
+                                          `category` VARCHAR(50),
+                                          `nominee` VARCHAR(50),
+                                          `additionalInfo` VARCHAR(255),
+                                          `won` VARCHAR(3)
 )ENGINE=InnoDB DEFAULT CHARSET=UTF8;
