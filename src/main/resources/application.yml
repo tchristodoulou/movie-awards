@@ -13,3 +13,7 @@ spring:
     schemas: movie-awards
     url: jdbc:mysql://mysql:3306/
     locations: db.migration
+
+movie-awards:
+  omdb-api-url: http://www.omdbapi.com/
+  omdb-api-key: 3e28ec88

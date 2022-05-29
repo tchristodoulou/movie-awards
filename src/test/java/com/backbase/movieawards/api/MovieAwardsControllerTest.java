@@ -18,6 +18,9 @@ import org.springframework.http.HttpStatus;
 @ExtendWith(MockitoExtension.class)
 class MovieAwardsControllerTest {
 
+  private static final String NAME = "test name";
+  private static final String YEAR = "2022";
+
   @Mock private MovieAwardsService movieAwardsService;
   @Mock private MovieAwardsResponseAssembler movieAwardsResponseAssembler;
   @Mock private MovieDetails movieDetails;
@@ -32,9 +35,9 @@ class MovieAwardsControllerTest {
 
   @Test
   void getBestPicture_returnsOkStatusWithMovieDetailsResponse() {
-    when(movieAwardsService.getMovieDetails()).thenReturn(movieDetails);
+    when(movieAwardsService.getMovieDetails(NAME, YEAR)).thenReturn(movieDetails);
     when(movieAwardsResponseAssembler.assemble(movieDetails)).thenReturn(movieDetailsResponse);
-    final var response = subject.getBestPicture();
+    final var response = subject.getBestPicture(NAME, YEAR);
     assertNotNull(movieDetailsResponse);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(movieDetailsResponse, response.getBody());
