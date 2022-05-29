@@ -6,3 +6,7 @@ spring:
     password: sa
   flyway:
     enabled: false
+
+movie-awards:
+  omdb-api-url: http://www.testapi.com/
+  omdb-api-key: testKey
