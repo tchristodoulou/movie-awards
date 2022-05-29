@@ -6,3 +6,10 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
+  flyway:
+    enabled: true
+    user: root
+    password:
+    schemas: movie-awards
+    url: jdbc:mysql://mysql:3306/
+    locations: db.migration

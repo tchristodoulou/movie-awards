@@ -13,7 +13,7 @@ services:
       - main
 
   mysql:
-    image: mysql:5.6
+    image: mysql:8
     ports:
       - "3306:3306"
     environment:
