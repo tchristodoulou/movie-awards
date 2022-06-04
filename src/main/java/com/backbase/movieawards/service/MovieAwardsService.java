@@ -29,7 +29,7 @@ public class MovieAwardsService {
   public MovieDetails getMovieDetails(final String name, final String year) {
     final var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl)
         .queryParam("apikey", apiKey)
-        .queryParam("t", name.replace(" ", "+"))
+        .queryParam("t", name.replace(" ", "_"))
         .queryParam("y", year);
 
     final var response = restTemplate.getForEntity(urlTemplate.toUriString(), OMDBMovieDetailsResponse.class);

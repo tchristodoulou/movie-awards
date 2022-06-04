@@ -1,8 +1,7 @@
 package com.backbase.movieawards.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import com.backbase.movieawards.model.OMDBMovieDetailsResponse;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponseFixtures;
@@ -23,10 +22,9 @@ class MovieAwardsServiceTest {
 
   private static final String NAME = "test name";
   private static final String YEAR = "2022";
-  private static final String WON = "NO";
   private static final String API_KEY = "testKey";
   private static final String URL = "http://www.testapi.com/";
-  private static final String TEST_URL = URL + "?apikey=" + API_KEY + "&t=test+name&y=" + YEAR;
+  private static final String TEST_URL = URL + "?apikey=" + API_KEY + "&t=test_name&y=" + YEAR;
   private static final String BEST_PICTURE = "Best Picture";
 
   @Mock private RestTemplate restTemplate;
