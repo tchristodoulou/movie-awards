@@ -15,6 +15,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class MovieAwardsService {
 
+  private static final String BEST_PICTURE = "Best Picture";
+
   private final RestTemplate restTemplate;
   private final MovieDetailsRepository movieDetailsRepository;
 
@@ -38,7 +40,7 @@ public class MovieAwardsService {
 
     final var movieDetailsResponse = response.getBody();
 
-    final var movieDetails = movieDetailsRepository.findByNomineeAndYearAndCategory(movieDetailsResponse.getTitle(), movieDetailsResponse.getYear(), "Best Picture");
+    final var movieDetails = movieDetailsRepository.findByNomineeAndYearAndCategory(movieDetailsResponse.getTitle(), movieDetailsResponse.getYear(), BEST_PICTURE);
 
     return movieDetails;
   }
