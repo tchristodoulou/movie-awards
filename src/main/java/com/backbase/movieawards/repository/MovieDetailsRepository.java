@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MovieDetailsRepository extends JpaRepository<MovieDetails, UUID> {
 
+  MovieDetails findByNomineeAndYearAndCategory(final String nominee, final String year, final String category);
 }
