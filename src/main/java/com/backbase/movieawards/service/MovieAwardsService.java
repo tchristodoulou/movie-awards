@@ -3,10 +3,11 @@ package com.backbase.movieawards.service;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponse;
 import com.backbase.movieawards.repository.MovieDetailsRepository;
 import com.backbase.movieawards.repository.entity.MovieDetails;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,6 +17,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class MovieAwardsService {
 
   private static final String BEST_PICTURE = "Best Picture";
+  private static final String WON_NO = "NO";
+  private static final String OMDB_NOT_FOUND = "No title [%s] found for year [%s]";
+  private static final String NOT_NOMINATED = "Not nominated for Best Picture";
+  private static final String DATABASE_NOT_FOUND = "Title [%s] year [%s] Not nominated for Best Picture";
 
   private final RestTemplate restTemplate;
   private final MovieDetailsRepository movieDetailsRepository;
@@ -32,16 +37,35 @@ public class MovieAwardsService {
         .queryParam("t", name.replace(" ", "_"))
         .queryParam("y", year);
 
-    final var response = restTemplate.getForEntity(urlTemplate.toUriString(), OMDBMovieDetailsResponse.class);
+    final var response = restTemplate.getForEntity(urlTemplate.toUriString(),
+        OMDBMovieDetailsResponse.class);
 
-    if(!HttpStatus.OK.equals(response.getStatusCode())) {
-      // Throw exception to handle and return bad request / other errors
+    if (checkResponse(response)) {
+      throw new MovieNotFoundException(String.format(OMDB_NOT_FOUND, name, year));
     }
 
     final var movieDetailsResponse = response.getBody();
 
-    final var movieDetails = movieDetailsRepository.findByNomineeAndYearAndCategory(movieDetailsResponse.getTitle(), movieDetailsResponse.getYear(), BEST_PICTURE);
+    final var movieDetails = movieDetailsRepository.findByNomineeAndYearAndCategory(
+        movieDetailsResponse.getTitle(), movieDetailsResponse.getYear(), BEST_PICTURE);
 
-    return movieDetails;
+    return movieDetails.orElse(createMovieDetails(movieDetailsResponse));
+  }
+
+  private boolean checkResponse(final ResponseEntity<OMDBMovieDetailsResponse> response) {
+    return Objects.isNull(response) || Objects.isNull(response.getBody()) || Objects.isNull(
+        response.getBody().getTitle());
+  }
+
+  private MovieDetails createMovieDetails(final OMDBMovieDetailsResponse response) {
+    //log error message
+    return MovieDetails.builder()
+        .id(null)
+        .nominee(response.getTitle())
+        .year(response.getYear())
+        .category(BEST_PICTURE)
+        .additionalInfo(NOT_NOMINATED)
+        .won(WON_NO)
+        .build();
   }
 }
