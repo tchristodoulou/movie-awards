@@ -23,7 +23,6 @@ public class MovieAwardsService {
   private static final String WON_NO = "NO";
   private static final String OMDB_NOT_FOUND = "No title [%s] found for year [%s]";
   private static final String NOT_NOMINATED = "Not nominated for Best Picture";
-  private static final String DATABASE_NOT_FOUND = "Title [%s] year [%s] Not nominated for Best Picture";
 
   private final RestTemplate restTemplate;
   private final MovieDetailsRepository movieDetailsRepository;
@@ -37,7 +36,7 @@ public class MovieAwardsService {
   public MovieDetails getMovieDetails(final String name, final String year) {
     final var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl)
         .queryParam("apikey", apiKey)
-        .queryParam("t", name.replace(" ", "_"))
+        .queryParam("t", name.replace(" ", "+"))
         .queryParam("y", year);
 
     final var stopwatch = new StopWatch();
@@ -57,7 +56,7 @@ public class MovieAwardsService {
 
     final var movieDetailsResponse = response.getBody();
 
-    final var movieDetails = movieDetailsRepository.findByNomineeAndYearAndCategory(
+    final var movieDetails = movieDetailsRepository.findByNomineeAndMovieYearAndCategory(
         movieDetailsResponse.getTitle(), movieDetailsResponse.getYear(), BEST_PICTURE);
 
     return movieDetails.orElse(createMovieDetails(movieDetailsResponse));
@@ -73,7 +72,7 @@ public class MovieAwardsService {
     return MovieDetails.builder()
         .id(null)
         .nominee(response.getTitle())
-        .year(response.getYear())
+        .movieYear(response.getYear())
         .category(BEST_PICTURE)
         .additionalInfo(NOT_NOMINATED)
         .won(WON_NO)

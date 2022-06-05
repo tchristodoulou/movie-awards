@@ -1,6 +1,5 @@
 #  TODO
 
-- Writing ITs
 - Security Token
 - Endpoint for posting reviews
 - Endpoint for getting top ten box office movies
@@ -13,4 +12,5 @@
 - The security would need to be improved to be production ready - a secrets management system for
 db password and API key from OMDb so that they aren't in plaintext. These could then be loaded into
 the .env file
-- Better handling of errors with callouts to OMDb, maybe implement a retry function / max timeout / error handing response object that can deserialise to instead of checking field null
+- Better handling of errors with callouts to OMDb, maybe implement a retry function / max timeout 
+/ error handing response object that can deserialise to instead of checking field null

@@ -26,8 +26,8 @@ public class MovieDetails {
   @Column(name = "id", nullable = false, length = 36)
   private UUID id;
 
-  @Column(name = "year")
-  private String year;
+  @Column(name = "movie_year")
+  private String movieYear;
 
   @Column(name = "category")
   private String category;
@@ -35,7 +35,7 @@ public class MovieDetails {
   @Column(name = "nominee")
   private String nominee;
 
-  @Column(name = "additionalInfo")
+  @Column(name = "additional_info")
   private String additionalInfo;
 
   @Column(name = "won")
