@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Slf4j
 public class MovieAwardsAdvice {
 
   private final MovieAwardsErrorResponseAssembler assembler;
@@ -33,6 +35,7 @@ public class MovieAwardsAdvice {
   }
 
   private List<MovieAwardsErrorResponse> getErrors(final ConstraintViolationException exception) {
+    log.error(exception.getMessage());
     final var violations = exception.getConstraintViolations();
 
     return violations.stream()
