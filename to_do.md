@@ -5,8 +5,6 @@
 - Endpoint for posting reviews
 - Endpoint for getting top ten box office movies
 - complete documentation
-- .env file for docker values
-- Logging
 
 # Improvements
 

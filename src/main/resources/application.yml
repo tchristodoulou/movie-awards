@@ -1,19 +1,19 @@
 spring:
   datasource:
-    url: jdbc:mysql://mysql:3306/movie_awards
-    username: root
-    passsword:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    passsword: ${DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
   flyway:
-    enabled: true
-    user: root
-    password:
+    enabled: ${FLYWAY_ENABLED}
+    user: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     schemas: movie_awards
     url: jdbc:mysql://mysql:3306/
     locations: db.migration
 
 movie-awards:
-  omdb-api-url: http://www.omdbapi.com/
-  omdb-api-key: 3e28ec88
+  omdb-api-url: ${OMDB_API_URL}
+  omdb-api-key: ${OMDB_API_KEY}
