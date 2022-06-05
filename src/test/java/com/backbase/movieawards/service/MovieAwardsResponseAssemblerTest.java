@@ -20,7 +20,7 @@ class MovieAwardsResponseAssemblerTest {
     final var movieDetails = MovieDetailsFixture.getCompletedMovieDetails();
     final var movieDetailsResponse = subject.assemble(movieDetails);
     assertEquals(movieDetails.getId(), movieDetailsResponse.getId());
-    assertEquals(movieDetails.getYear(), movieDetailsResponse.getYear());
+    assertEquals(movieDetails.getMovieYear(), movieDetailsResponse.getYear());
     assertEquals(movieDetails.getCategory(), movieDetailsResponse.getCategory());
     assertEquals(movieDetails.getNominee(), movieDetailsResponse.getNominee());
     assertEquals(movieDetails.getAdditionalInfo(), movieDetailsResponse.getAdditionalInfo());

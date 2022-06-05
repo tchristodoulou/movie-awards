@@ -8,11 +8,22 @@ public class MovieDetailsFixture {
   public static MovieDetails getCompletedMovieDetails() {
     return MovieDetails.builder()
         .id(UUID.randomUUID())
-        .year("2022")
+        .movieYear("2022")
         .category("test category")
         .nominee("mr test")
         .additionalInfo("test")
         .won("NO")
+        .build();
+  }
+
+  public static MovieDetails getWinningCompletedMovieDetails() {
+    return MovieDetails.builder()
+        .id(UUID.randomUUID())
+        .movieYear("2022")
+        .category("Best Picture")
+        .nominee("test")
+        .additionalInfo("test")
+        .won("YES")
         .build();
   }
 }

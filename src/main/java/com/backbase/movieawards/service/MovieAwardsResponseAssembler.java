@@ -10,7 +10,7 @@ public class MovieAwardsResponseAssembler {
   public MovieDetailsResponse assemble(final MovieDetails movieDetails) {
     return MovieDetailsResponse.builder()
         .id(movieDetails.getId())
-        .year(movieDetails.getYear())
+        .year(movieDetails.getMovieYear())
         .category(movieDetails.getCategory())
         .nominee(movieDetails.getNominee())
         .additionalInfo(movieDetails.getAdditionalInfo())

@@ -29,7 +29,7 @@ class MovieAwardsServiceTest {
   private static final String YEAR = "2022";
   private static final String API_KEY = "testKey";
   private static final String URL = "http://www.testapi.com/";
-  private static final String TEST_URL = URL + "?apikey=" + API_KEY + "&t=test_name&y=" + YEAR;
+  private static final String TEST_URL = URL + "?apikey=" + API_KEY + "&t=test+name&y=" + YEAR;
   private static final String BEST_PICTURE = "Best Picture";
   private static final String OMDB_NOT_FOUND = "No title [test name] found for year [2022]";
   private static final String WON_NO = "NO";
@@ -55,7 +55,7 @@ class MovieAwardsServiceTest {
     ReflectionTestUtils.setField(subject, "baseUrl", URL);
 
     when(restTemplate.getForEntity(TEST_URL, OMDBMovieDetailsResponse.class)).thenReturn(ResponseEntity.ok(omdbMovieDetailsResponse));
-    when(movieDetailsRepository.findByNomineeAndYearAndCategory(omdbMovieDetailsResponse.getTitle(),
+    when(movieDetailsRepository.findByNomineeAndMovieYearAndCategory(omdbMovieDetailsResponse.getTitle(),
         omdbMovieDetailsResponse.getYear(), BEST_PICTURE)).thenReturn(Optional.of(movieDetails));
 
     final var actualMovieDetails = subject.getMovieDetails(NAME, YEAR);
@@ -105,13 +105,13 @@ class MovieAwardsServiceTest {
     ReflectionTestUtils.setField(subject, "baseUrl", URL);
 
     when(restTemplate.getForEntity(TEST_URL, OMDBMovieDetailsResponse.class)).thenReturn(ResponseEntity.ok(omdbMovieDetailsResponse));
-    when(movieDetailsRepository.findByNomineeAndYearAndCategory(omdbMovieDetailsResponse.getTitle(),
+    when(movieDetailsRepository.findByNomineeAndMovieYearAndCategory(omdbMovieDetailsResponse.getTitle(),
         omdbMovieDetailsResponse.getYear(), BEST_PICTURE)).thenReturn(Optional.empty());
 
     final var actualMovieDetails = subject.getMovieDetails(NAME, YEAR);
     assertNotNull(actualMovieDetails);
     assertNull(actualMovieDetails.getId());
-    assertEquals(omdbMovieDetailsResponse.getYear(), actualMovieDetails.getYear());
+    assertEquals(omdbMovieDetailsResponse.getYear(), actualMovieDetails.getMovieYear());
     assertEquals(omdbMovieDetailsResponse.getTitle(), actualMovieDetails.getNominee());
     assertEquals(BEST_PICTURE, actualMovieDetails.getCategory());
     assertEquals(NOT_NOMINATED, actualMovieDetails.getAdditionalInfo());
