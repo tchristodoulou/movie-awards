@@ -2,8 +2,6 @@
 
 - Writing ITs
 - Security Token
-- Error handling for controller if name and year not supplied
-- Error handling for not found in request out / db - FINISH THIS, NEED CONTROLLER ADVICE
 - Endpoint for posting reviews
 - Endpoint for getting top ten box office movies
 - complete documentation
