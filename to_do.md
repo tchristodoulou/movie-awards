@@ -1,23 +1,14 @@
 #  TODO
 
-- Security Token - could just have a "cache" which generates a random string for password, 
-use endpoint to get it.
+- Security Token - Idea was to have a bean with a fixed username and generated password which is 
+created on startup. Adding a new controller specifically for get "/authorisation" which would return
+the username and password as plaintext.
+  - This could then be added to the header on the getBestPicture and saveReview requests, and an 
+  annotation created using spring security to apply to each endpoint. This would take a 
+  HttpServletRequest to read the headers and then check these against the generated values.
+  - If it's a match, allow the request, otherwise a 401 would be returned
 
 - Endpoint for getting top ten box office movies
-
-
-- complete documentation
-- how_to_run with security
-
-- Diagrams
-   ○ system-context-diagram – a system context diagram (UML, whiteboard
-   jpg photo, 8-bit pixel art gif, a phone picture of a bar's paper napkin with a
-   crayon diagram scrawled on it, anything is good as long as it's legible)
-   ○ entity-diagram
-   ○ component-diagram
-   ○ class-diagram
-   ○ data-flow-diagram
-   ○ sequence-diagram
 
 # Improvements
 
