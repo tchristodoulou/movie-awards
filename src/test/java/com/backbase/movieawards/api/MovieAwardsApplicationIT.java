@@ -8,9 +8,12 @@ import static org.mockito.Mockito.when;
 
 import com.backbase.movieawards.model.MovieAwardsErrorResponse;
 import com.backbase.movieawards.model.MovieDetailsResponse;
+import com.backbase.movieawards.model.MovieReviewRequestFixture;
+import com.backbase.movieawards.model.MovieReviewResponse;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponse;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponseFixtures;
 import com.backbase.movieawards.repository.MovieDetailsRepository;
+import com.backbase.movieawards.repository.MovieReviewRepository;
 import com.backbase.movieawards.respository.entity.MovieDetailsFixture;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -33,10 +36,14 @@ public class MovieAwardsApplicationIT {
   @Autowired
   private MovieDetailsRepository movieDetailsRepository;
 
+  @Autowired
+  private MovieReviewRepository movieReviewRepository;
+
   @LocalServerPort
   private int randomServerPort;
 
-  private static final String URL = "http://localhost:%d/movie-awards/best-picture";
+  private static final String BEST_PICTURE_URL = "http://localhost:%d/movie-awards/best-picture";
+  private static final String SAVE_REVIEW_URL = "http://localhost:%d/movie-awards/review";
   private static final String API_KEY = "testKey";
   private static final String NAME = "test name";
   private static final String YEAR = "2022";
@@ -72,7 +79,7 @@ public class MovieAwardsApplicationIT {
     when(mockedRestTemplate.getForEntity(omdbUrlTemplate.toUriString(),
         OMDBMovieDetailsResponse.class)).thenReturn(ResponseEntity.ok(omdbMovieDetailsResponse));
 
-    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(URL, randomServerPort))
+    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(BEST_PICTURE_URL, randomServerPort))
         .queryParam("name", NAME.replace(" ", "_"))
         .queryParam("year", YEAR);
 
@@ -101,7 +108,7 @@ public class MovieAwardsApplicationIT {
     when(mockedRestTemplate.getForEntity(omdbUrlTemplate.toUriString(),
         OMDBMovieDetailsResponse.class)).thenReturn(ResponseEntity.ok(null));
 
-    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(URL, randomServerPort))
+    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(BEST_PICTURE_URL, randomServerPort))
         .queryParam("name", NAME.replace(" ", "+"))
         .queryParam("year", YEAR);
 
@@ -125,7 +132,7 @@ public class MovieAwardsApplicationIT {
     when(mockedRestTemplate.getForEntity(omdbUrlTemplate.toUriString(),
         OMDBMovieDetailsResponse.class)).thenReturn(ResponseEntity.ok(omdbMovieDetailsResponse));
 
-    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(URL, randomServerPort))
+    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(BEST_PICTURE_URL, randomServerPort))
         .queryParam("name", NAME.replace(" ", "_"))
         .queryParam("year", YEAR);
 
@@ -146,7 +153,7 @@ public class MovieAwardsApplicationIT {
 
   @Test
   void getBestPicture_WithInvalidRequest_ReturnsBadRequestWithErrors() {
-    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(URL, randomServerPort))
+    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(BEST_PICTURE_URL, randomServerPort))
         .queryParam("name", "")
         .queryParam("year", "");;
 
@@ -169,4 +176,33 @@ public class MovieAwardsApplicationIT {
     assertEquals("year", (error2).getField());
     assertEquals("must not be blank", (error2).getError());
   }
+
+  @Test
+  void saveReview_WithMovieReviewRequest_ReturnsCreatedWithMovieReviewResponse() {
+    final var movieReviewRequest = MovieReviewRequestFixture.getCompletedMovieReviewRequest();
+
+    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(String.format(SAVE_REVIEW_URL, randomServerPort));
+
+    final var response = testRestTemplate.postForEntity(urlTemplate.toUriString(),movieReviewRequest,
+        MovieReviewResponse.class);
+    assertNotNull(response);
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+    final var movieReviewResponse = response.getBody();
+    assertNotNull(movieReviewResponse);
+    assertEquals(movieReviewRequest.getTitle(), movieReviewResponse.getTitle());
+    assertEquals(movieReviewRequest.getMovieYear(), movieReviewResponse.getMovieYear());
+    assertEquals(movieReviewRequest.getReviewScore(), movieReviewResponse.getReviewScore());
+
+    final var movieReview = movieReviewRepository.findById(movieReviewResponse.getId());
+    assertTrue(movieReview.isPresent());
+    final var savedMovieReview = movieReview.get();
+    assertEquals(movieReviewRequest.getTitle(), savedMovieReview.getTitle());
+    assertEquals(movieReviewRequest.getMovieYear(), savedMovieReview.getMovieYear());
+    assertEquals(movieReviewRequest.getReviewScore(), savedMovieReview.getReviewScore());
+  }
+
+  /*
+  TODO: more tests for the negative cases on saveReview
+   */
 }
