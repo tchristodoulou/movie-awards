@@ -35,3 +35,4 @@ the .env file
 / error handing response object that can deserialise to instead of checking field null
 - Added some tests around the repositories for basic save / load to check they are configured right,
 test for findByNomineeAndMovieYearAndCategory (all done using SpringBootTest and H2)
+- Add better error handling to the bad request when doing a post request to /movie-awards/review
