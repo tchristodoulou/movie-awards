@@ -1,8 +1,11 @@
 package com.backbase.movieawards.service;
 
+import com.backbase.movieawards.model.MovieReviewRequest;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponse;
 import com.backbase.movieawards.repository.MovieDetailsRepository;
+import com.backbase.movieawards.repository.MovieReviewRepository;
 import com.backbase.movieawards.repository.entity.MovieDetails;
+import com.backbase.movieawards.repository.entity.MovieReview;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,8 @@ public class MovieAwardsService {
 
   private final RestTemplate restTemplate;
   private final MovieDetailsRepository movieDetailsRepository;
+  private final MovieReviewAssembler movieReviewAssembler;
+  private final MovieReviewRepository movieReviewRepository;
 
   @Value("${movie-awards.omdb-api-key}")
   private String apiKey;
@@ -34,20 +39,7 @@ public class MovieAwardsService {
   private String baseUrl;
 
   public MovieDetails getMovieDetails(final String name, final String year) {
-    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl)
-        .queryParam("apikey", apiKey)
-        .queryParam("t", name.replace(" ", "+"))
-        .queryParam("y", year);
-
-    final var stopwatch = new StopWatch();
-    stopwatch.start();
-
-    log.info("Sending request to url [{}]", urlTemplate.toUriString());
-    final var response = restTemplate.getForEntity(urlTemplate.toUriString(),
-        OMDBMovieDetailsResponse.class);
-
-    stopwatch.stop();
-    log.info("Response received, time taken {}ms", stopwatch.getTotalTimeMillis());
+    final var response = sendRequest(name, year);
 
     if (checkResponse(response)) {
       log.debug("No movie found for title [{}] and year [{}]", name, year);
@@ -62,13 +54,41 @@ public class MovieAwardsService {
     return movieDetails.orElse(createMovieDetails(movieDetailsResponse));
   }
 
+  public MovieReview saveReview(final MovieReviewRequest movieDetailsRequest) {
+    final var movieReview = movieReviewAssembler.assemble(movieDetailsRequest);
+    log.info("Saving movie review with title [{}], year [{}]", movieReview.getTitle(),
+        movieReview.getMovieYear());
+    final var savedMovieReview = movieReviewRepository.save(movieReview);
+    return savedMovieReview;
+  }
+
+  private ResponseEntity<OMDBMovieDetailsResponse> sendRequest(final String name,
+      final String year) {
+    final var urlTemplate = UriComponentsBuilder.fromHttpUrl(baseUrl)
+        .queryParam("apikey", apiKey)
+        .queryParam("t", name.replace(" ", "+"))
+        .queryParam("y", year);
+
+    final var stopwatch = new StopWatch();
+    stopwatch.start();
+
+    log.info("Sending request to url [{}]", urlTemplate.toUriString());
+    final var response = restTemplate.getForEntity(urlTemplate.toUriString(),
+        OMDBMovieDetailsResponse.class);
+
+    stopwatch.stop();
+    log.info("Response received, time taken {}ms", stopwatch.getTotalTimeMillis());
+    return response;
+  }
+
   private boolean checkResponse(final ResponseEntity<OMDBMovieDetailsResponse> response) {
     return Objects.isNull(response) || Objects.isNull(response.getBody()) || Objects.isNull(
         response.getBody().getTitle());
   }
 
   private MovieDetails createMovieDetails(final OMDBMovieDetailsResponse response) {
-    log.debug("The movie [{}] and year [{}] was not nominated for best movie", response.getTitle(), response.getYear());
+    log.debug("The movie [{}] and year [{}] was not nominated for best movie", response.getTitle(),
+        response.getYear());
     return MovieDetails.builder()
         .id(null)
         .nominee(response.getTitle())
