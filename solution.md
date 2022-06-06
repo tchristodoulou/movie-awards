@@ -17,6 +17,13 @@ on API start up. I felt given the data in the CSV is fairly static, this was a s
 over using the CSVReader library or something similar. Using the DB I could simply write a Spring
 data jpa interface instead of reading the csv line by line and having to filter on text matching.
 
+## Movie Awards and Movie Review Tables
+
+I created a second table for the reviews rather than adding an extra column. I felt that these two areas
+are separate parts of the business - yes they are both linked with movies, however a movie being 
+nominated for an award has no correlation with how a movie could be reviewed - critically bad movies 
+can be reviewed well by audiences
+
 
 
 
