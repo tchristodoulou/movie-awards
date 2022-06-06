@@ -7,10 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import com.backbase.movieawards.model.MovieReviewRequest;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponse;
 import com.backbase.movieawards.model.OMDBMovieDetailsResponseFixtures;
 import com.backbase.movieawards.repository.MovieDetailsRepository;
+import com.backbase.movieawards.repository.MovieReviewRepository;
 import com.backbase.movieawards.repository.entity.MovieDetails;
+import com.backbase.movieawards.repository.entity.MovieReview;
 import com.backbase.movieawards.respository.entity.MovieDetailsFixture;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +40,11 @@ class MovieAwardsServiceTest {
 
   @Mock private RestTemplate restTemplate;
   @Mock private MovieDetailsRepository movieDetailsRepository;
+  @Mock private MovieReviewAssembler movieReviewAssembler;
+  @Mock private MovieReviewRepository movieReviewRepository;
+  @Mock private MovieReviewRequest movieReviewRequest;
+  @Mock private MovieReview movieReview;
+  @Mock private MovieReview savedMovieReview;
 
   private MovieAwardsService subject;
   private OMDBMovieDetailsResponse omdbMovieDetailsResponse;
@@ -46,7 +54,7 @@ class MovieAwardsServiceTest {
   void onBeforeEach() {
     omdbMovieDetailsResponse = OMDBMovieDetailsResponseFixtures.getOMDBMovieDetailsResponse();
     movieDetails = MovieDetailsFixture.getCompletedMovieDetails();
-    subject = new MovieAwardsService(restTemplate, movieDetailsRepository);
+    subject = new MovieAwardsService(restTemplate, movieDetailsRepository, movieReviewAssembler, movieReviewRepository);
   }
 
   @Test
@@ -116,5 +124,14 @@ class MovieAwardsServiceTest {
     assertEquals(BEST_PICTURE, actualMovieDetails.getCategory());
     assertEquals(NOT_NOMINATED, actualMovieDetails.getAdditionalInfo());
     assertEquals(WON_NO, movieDetails.getWon());
+  }
+
+  @Test
+  void saveReview_WithMovieRequestDetails_ReturnsSavedMovieReview() {
+    when(movieReviewAssembler.assemble(movieReviewRequest)).thenReturn(movieReview);
+    when(movieReviewRepository.save(movieReview)).thenReturn(savedMovieReview);
+    final var actualMovieReview = subject.saveReview(movieReviewRequest);
+    assertNotNull(actualMovieReview);
+    assertEquals(savedMovieReview, actualMovieReview);
   }
 }
